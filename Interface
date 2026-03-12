@@ -1,0 +1,137 @@
+#Interface
+추상화의 한 종류이며 상수필드와 추상메서드로만 이루어져있음
+
+# 역할
+
+객체의 사용 방법을 정의하는 역할 (인터페이스의 이름으로 지정 가능)
+
+코드와 객체가 서로 통신하도록 연결하는 역할→ 개발 코드를 수정하지 않고 사용하는 객체 변경 가능
+
+여러 객체들과 사용이 가능하므로 어떤 객체를 사용하느냐에 따라서 실행 내용과 리턴값이 다를 수 있음
+→ 코드 측면에서는 코드 변경 없이 실행 내용과 리턴값을 다양화할 수 있다는 장점
+
+# 장점
+
+## 유지보수성
+
+각 객체의 공통된 부분을 추출하여 추상메서드로 작성
+객체가 의존하는 객체가 Interface → 의존도 & 결합성 하락
+→ 이는 유지보수 측면에서 좋은 영향을 준다
+
+## 다중 상속
+
+추상클래스와 다르게 객체가 여러개의 인터페이스 메서드를 가지고 있어도 다중으로 Interface를 상속가능
+(사용하는 이유중 큰 이유가 이것 때문일 것이다)
+
+## 확장성
+
+다중상속으로 인해 여러개의 인터페이스를 사용하고 또 추가해도 문제없이 확장할 수 있다
+
+## 재사용성
+
+이전 객체에 사용했던 Interface여도 필요하다면 다시 사용가능하다
+
+필드는 기본적으로 public Static final이며 메서드는 public abstract가 기본으로 되어있다
+
+구현(C#과 유니티)
+
+C#
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+class 산술연산자
+{
+    
+    public static void Main()
+    {
+        Yebin yebin = new Yebin();
+        Sxonoiz sxonoiz = new Sxonoiz();
+        Chaewoo chaewoo = new Chaewoo();
+        Yundoo yundoo = new Yundoo();
+        Uihyeon uihyeon = new Uihyeon();
+        Hyunsung hyunsung = new Hyunsung();
+        List<IGamism> gamisms = new List<IGamism>() { yebin, sxonoiz, chaewoo, yundoo, uihyeon, hyunsung };
+        foreach (IGamism gamism in gamisms)
+        {
+            Console.WriteLine(gamism.GetType().Name);
+            gamism.yourMajor();
+            Console.WriteLine();
+        }
+        
+        ICodeWriter codeWriter = hyunsung;
+        Console.WriteLine(codeWriter.GetType().Name);
+        codeWriter.ItMe();
+    }
+}
+
+class Yebin : IGamism
+{
+    public void yourMajor()
+    {
+        Console.WriteLine("클라이언트");
+        Console.WriteLine("클라이언트를 가장 잘해요!");
+    }
+}
+class Sxonoiz : IGamism// 재사용성 작성
+{
+    public void yourMajor()
+    {
+        Console.WriteLine("작곡");
+        Console.WriteLine("자료구조와 코딩테스트를 잘해요!");
+    }
+}
+class Chaewoo : IGamism
+{
+    public void yourMajor()
+    {
+        Console.WriteLine("디자인");
+        Console.WriteLine("디자인을 가장 잘해요!");
+    }
+}
+class Yundoo : IGamism
+{
+    public void yourMajor()
+    {
+        Console.WriteLine("디자인");
+        Console.WriteLine("클라이언트도 할 수 있어요!");
+    }
+}
+class Uihyeon : IGamism
+{
+    public void yourMajor()
+    {
+        Console.WriteLine("디자인");
+        Console.WriteLine("기능반 사이버 보안도 다녀봤어요!");
+    }
+}
+class Hyunsung : IGamism, ICodeWriter//확장성과 다중 상속 구현
+{
+    public void yourMajor()
+    {
+        Console.WriteLine("서버");
+        Console.WriteLine("디자인을 잘 못해요!");
+        //Console.WriteLine("yee");//유지보수성
+    }
+    
+    public void ItMe()
+    {
+        Console.WriteLine("이 코드 작성자는 저에요!");
+        Console.WriteLine("이 코드는 Interface예제에요!");
+    }
+}
+public interface IGamism
+{
+    void yourMajor();
+    //void hello()
+    //{
+    //    Console.WriteLine(); C# 8.0이후에만 가능
+    //}
+}
+
+public interface ICodeWriter
+{
+    void ItMe();
+}
+```
