@@ -1,0 +1,22 @@
+머티리얼이 분홍색(깨짐)일 때 해결방법
+머티리얼이 깨진 경우머티리얼이 분홍색(깨짐)일 때 해결방법
+## 머티리얼이 깨지는 경우
+- 셰이더 미지원
+- 렌더링 키워드/패스차이
+- 프로퍼티 불일치
+### 셰이더 미지원
+built-in의 standard 셰이더는 URP와 HDRP에서 사용할수 없음
+
+### 렌더링 키워드 패스차이
+파이프라인마다 렌더큐 키워드 표면 처리 방식이 다름
+
+### 프로퍼티 불일치
+URP/HDRP에선 _MainTex -> _BaseMap -> _Color -> _BaseColor처럼 이름체계가 다름
+
+# 해결 방법
+Window - Rendering - Render Pipeline Converter선택
+-> Material Upgreade선택 -> Convert Assets선택 -> Initialize And Convert선택
+
+머티리얼 Reimport
+project 창에서 마우스 오른쪽 클릭 -> Reimport 선택
+
