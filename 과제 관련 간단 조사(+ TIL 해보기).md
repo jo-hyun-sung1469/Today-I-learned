@@ -1,22 +1,24 @@
-HTTP
-웹 클라이언트와 웹 서버 간에 HTML문서와 같은 리소스들을 전송
-링크를 통해 연결할 수 있으며 HTML이나 TEXT, 이미지, 음성, 영상, 파일, JSON, XML(API) 등
+# HTTP
 여러 종류의 데이터들을 폭 넓게 전송할 수 있는 프로토콜
 
-특징은 
+## 특징은 
 - HTTP 클라이언트와 HTTP서버에 의해서 해석이 됨
 - 비연결성과 무상태성(서버가 클라이언트의 상태를 보존하지 않는다)
 - 요청/응답 방식으로 동작함
+- 확장성
+  - Scale up : 물리적으로 향상(RAM성능 향샹 등)
+  - Scale out : 서버를 여러게 만들어서 트래픽을 분산시키는 방법
 - 무상태성으로 인해 요청을 보낼때마다 이전상태를 보내야 됨
 - TCP/IP를 이용하는 응용 프로토콜
 ----------------------------------------------------------------------------------------------------
-HTTP/0.9 (1991년)
+## HTTP 버전 별 특징
+### HTTP/0.9 (1991년)
 단일 요청-응답 방식이며 텍스트 기반의 통신을 사용
 요청은 단일 라인으로 구성 되며, HTTP method는 GET만 존재함
 응답도 단순했고 무엇보다 헤더가 없으며 HTML파일만 전송이 가능함
 그리고 상태 코드가 없었음
 
-HTTP/1.0 (1996년)
+### HTTP/1.0 (1996년)
 헤더의 개념이 처음 도입된 버전
 메타데이터를 주고 받을수 있게 되었으며 프로토콜을 유연하고 확장 가능하도록 개선
 버전 정보과 요청 메서드가 함께 전송되기 시작되었으며
@@ -25,14 +27,15 @@ Content-Type도입으로 MTML 이외의 문서 전송 가능함
 단점은 커넥션이 요청 1번과 응답 1번만 가능 -> 비효율적이고 다시 커넥션을 만들때 서버의 부하가 생김
 요청 전송시 응답이 오기 전까지 기다림(순차적임) -> 비효율적
 
-HTTP/1.1 (1997년)
+### HTTP/1.1 (1997년)
+**가장 많이 사용하는 버전**
 Persistent Connection추가 -> 지정한 timemout동안 커넥션을 닫지 않음 -> 서버의 부하 감소
 pipeling추가 -> 순차적인 요청들을 연속적으로 전송하고 순서에 맞춰 응답을 받음
 단 이 방식은 동시에 처리하지 않음
 단점은 앞 요청의 응답은 너무 오래걸리면 뒤 요청이 막힘(Head Of Line Blocking)
 또한 연속된 요청으로 인한 헤더의 많은 중복 발생
 
-HTTP/2 (2015년)
+### HTTP/2 (2015년)
 HTTP1.1버젼의 성능 향상에 초점을 맞춘 프로토콜, 대체가 아닌 확장되는 개념으로 등
 Binary Framing 계층 추가, 보내는 메시지를 Frame 단위로 분할, 바이너리로 인코딩
 요청을 Stream으로 요청/응답이 교환됨 (Stream은 바이트의 양방향 흐름을 의미한다)
@@ -41,21 +44,22 @@ Binary Framing 계층 추가, 보내는 메시지를 Frame 단위로 분할, 바
 예시
 요청1 요청2 요청3 -> (바이너리 인코딩) -> (frame단위로 분할) -> (각 요청의 Stream을 통해 전송)
 -> (응답 Frame들이 요청의 Stream을 통해 전송 -> Head of Line Blocking X) -> 응답1 응답2 응답3
-Stream Prioritization
+특징
+- Stream Prioritization
 리소스간 우선순위를 설정하는 기능,
 Stream에 우선순위 부여해서 서로 교차하여 배치하고 전달 가능
 (순차적으로 처리하는 것이 아닌 서로 교차하여 배치하는 것을 인터리빙이라 한다)
-Server Push
+- Server Push
 단일 클라이언트 요청에 여러 응답을 보낼 수 있는 특징
 -> 서버에서 클라이언트에게 추가적인 리소스를 push하는 기능
-Header Compression
+- Header Compression
 기존의 연속된 요청으로 인한 중복된 헤더의 전송으로 오버헤드가 많이 발생함
 (개선)-> 요청과 응답의 헤더 메타데이터를 압축해서 오버헤드 감소
 전송되는 헤더 필드를 static/dynamic table로 서버에서 유지
 이전에 표시한 헤더를 제외한 필드를 허프만 인코딩으로 데이터 압축
 단점은 TCP에도 Head of Line Blocking이 존재함 -> 이를 제거하기 위해 QUIC와 HTTP3탄생
 
-QUIC
+### QUIC
 UDP 기반의 전송 프로토콜로써 UDP와 동일하게 Transport Layer에서 구동하지만 
 이 위에 새로운 계층 추가 -> 신뢰성 제공
 Google에서 TCP의 구조적인 문제인 Head of Line Blocking로 인해 성능 향상이 어렵다고 판단
@@ -63,9 +67,10 @@ Google에서 TCP의 구조적인 문제인 Head of Line Blocking로 인해 성�
 하나의 Stream chain으로 연결되는 TCP와 달리 Stream마다 독립된 Stream chain을 구성
 -> TCP의 Head of Line Blocking 해결
 
-HTTP/3 (2020년)
+### HTTP/3 (2020년)
 기존 연결 방식 대신 새로운 방식을 사용해서 연결시간을 단축했고 데이터 손실에도 전송을 유지함
 데이터의 순서 지연을 해결 그리고 항상 암호화된 연결을 사용해서 안전한 통신을 만듬 
+또한 느렸던 TCP보다 빠른 UDP를 사용 -> 속도 향상
 -----------------------------------------------------------------------------------------------------
 
 HTTP요청
@@ -73,6 +78,7 @@ HTTP요청
 요청의 구조는 각각 Start Line, Headers, Body가 있습니다
 Start Line은 3가지 부분으로 구성됩니다
 HTTP method - 클라이언트가 서버에게 어떤 종류의 동작을 원하는지 나타내는 방법입니다.
+CRUD를 표현하기 위한 요청 메서드(CRUD = 생성, 읽기, 업데이트, 삭제)
 HTTP method는 8개가 있으며 각각
 - get: 리소스를 조회라는 메서드이며 여러번 요청해도 리소스는 변하지 않고 리소스를 읽는 데만 사용됩니다(멱등성)
 - post: 주로 서버에 리소스를 생성할 때 그리고 양식(form) 데이터나 JSON 같은 정보를 전달하고 처리할 때 사용합니다
@@ -88,9 +94,9 @@ HTTP version:버젼을 명시하는 부분입니다
 
 headers:서버한테 요청을 보낼때 설정을 담아서 보내는 장소입니다. Key:Value 형태로 구성되어 있습니다.
 대표적인 키-값들
-:authority:요청한 리소스의 권한(authority)
-:method: HTTP 요청 메서드를 나타내는 헤더 필드
-:path: HTTP 요청 URI를 나타내는 헤더 필드입니다
+authority:요청한 리소스의 권한(authority)
+method: HTTP 요청 메서드를 나타내는 헤더 필드
+path: HTTP 요청 URI를 나타내는 헤더 필드입니다
 cookie: HTTP 요청에서 사용되는 헤더 필드 중 하나
 accept: 클라이언트가 처리 가능한 콘텐츠 타입을 나타내는 헤더 필드
 Authorization: 인증 정보를 서버로 보낼 때 쓰이는 헤더 필드
@@ -176,8 +182,8 @@ RESTful API
 REST 원칙을 엄격히 지겨서 만든 API
 
 REST
-자원을 이름으로 구분해 해당 자원의 상태를 주고 받는 모든 것을 의미하며
-클라이언트와 서버 사이의 통신 방식중 하나이
+자원을 이름으로 구분해 해당 자원의 상태를 주고 받고 http 메서드를 자원의 행위로 사용한다는 것이다
+클라이언트와 서버 사이의 통신 방식중 하나이다
 REST 구성요소
 자원
 해당 소프트웨어가 관리하는 모든것(문서, 그림, 데이터 등)
@@ -225,22 +231,22 @@ REST 아키텍처 스타일의 디자인 원칙을 준수하는 API
 ----------------------------------------------------------------------------------------
 
 출처
-https://seunghyun90.tistory.com/41
-https://developing-move.tistory.com/256#google_vignette
-https://www.lenovo.com/kr/ko/glossary/hypertext-transfer-protocol/?orgRef=https%253A%252F%252Fwww.google.com%252F&srsltid=AfmBOooVVTQObOl1NtW42FL2rw5pXGDX-wVV7SFJwlFy4k-UrxTA7o_D
-https://www.devkobe24.com/Network/2024/2024-10-11-what-is-the-http-protocol.html
-https://testmanager.tistory.com/346
-https://bruders.tistory.com/143
-https://engineerinsight.tistory.com/47#google_vignette
-https://hahahoho5915.tistory.com/62#google_vignette
-https://somaz.tistory.com/236
-https://kagrin97-blog.vercel.app/other/Http-headers
-https://hongong.hanbit.co.kr/http-%EC%83%81%ED%83%9C-%EC%BD%94%EB%93%9C-%ED%91%9C-1xx-5xx-%EC%A0%84%EC%B2%B4-%EC%9A%94%EC%95%BD-%EC%A0%95%EB%A6%AC/
-https://www.cloudflare.com/ko-kr/learning/ssl/what-happens-in-a-tls-handshake/
-https://sunrise-min.tistory.com/entry/TLS-Handshake%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EC%A7%84%ED%96%89%EB%90%98%EB%8A%94%EA%B0%80
-https://co-meow.tistory.com/entry/Linux-Cron%ED%81%AC%EB%A1%A0%EC%9D%B4%EB%9E%80
-https://codinghero.tistory.com/61#google_vignette
-https://chaaany.tistory.com/290
-https://dev-coco.tistory.com/97
-https://easyhomputer.tistory.com/38
-https://hahahoho5915.tistory.com/54#google_vignette
+- https://seunghyun90.tistory.com/41
+- https://developing-move.tistory.com/256#google_vignette
+- https://www.lenovo.com/kr/ko/glossary/hypertext-transfer-protocol/?orgRef=https%253A%252F%252Fwww.google.com%252F&srsltid=AfmBOooVVTQObOl1NtW42FL2rw5pXGDX-wVV7SFJwlFy4k-UrxTA7o_D
+- https://www.devkobe24.com/Network/2024/2024-10-11-what-is-the-http-protocol.html
+- https://testmanager.tistory.com/346
+- https://bruders.tistory.com/143
+- https://engineerinsight.tistory.com/47#google_vignette
+- https://hahahoho5915.tistory.com/62#google_vignette
+- https://somaz.tistory.com/236
+- https://kagrin97-blog.vercel.app/other/Http-headers
+- https://hongong.hanbit.co.kr/http-%EC%83%81%ED%83%9C-%EC%BD%94%EB%93%9C-%ED%91%9C-1xx-5xx-%EC%A0%84%EC%B2%B4-%EC%9A%94%EC%95%BD-%EC%A0%95%EB%A6%AC/
+- https://www.cloudflare.com/ko-kr/learning/ssl/what-happens-in-a-tls-handshake/
+- https://sunrise-min.tistory.com/entry/TLS-Handshake%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EC%A7%84%ED%96%89%EB%90%98%EB%8A%94%EA%B0%80
+- https://co-meow.tistory.com/entry/Linux-Cron%ED%81%AC%EB%A1%A0%EC%9D%B4%EB%9E%80
+- https://codinghero.tistory.com/61#google_vignette
+- https://chaaany.tistory.com/290
+- https://dev-coco.tistory.com/97
+- https://easyhomputer.tistory.com/38
+-  https://hahahoho5915.tistory.com/54#google_vignette
