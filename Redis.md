@@ -439,10 +439,6 @@ TTL user:1
 
   * Master-Slave Replication
 
-* 현재 주로 사용하는 명칭
-
-  * **Primary-Replica**
-
 * Primary
 
   * 기본 데이터를 관리하는 서버
@@ -450,6 +446,19 @@ TTL user:1
 * Replica
 
   * Primary의 데이터를 복제하는 서버
+
+* 특징
+  * 비동기 복제
+  * 1:N 구조
+  * failover 자동 X
+ 
+* 작동 방식
+  * 디스크 사용 방식
+    이 방식은 RDB 스냅샷을 저장하고 Replica에 저장하는 방식(디스크 IO 발생)
+  * 디스크리스 방식
+    RDB 스냅샷을 저장하지 않고 Replica에 저장하는 방식(장애 발생시 복구 불가)
+  * Partial Resync
+    위 두방식과는 달리 변경사항이 별로 없을때 사용하며 빠진 부분만 보내는 방법이다
 
 * 활용
 
@@ -459,8 +468,10 @@ TTL user:1
 
 * 주의점
 
-  * Redis 복제는 일반적으로 비동기 방식
+  * Redis 복제는 일반적으로 비동기 방식 -> Primary와 달라질 수 있음
   * 장애 발생 시점에 따라 일부 데이터 유실 가능
+  * Primary 서버가 장애발생 해도 Replica 서버가 자동 승격되지 않음
+  * Replica는 백업본이 아님(master의 데이터 삭제시 복사될 수 있음)
 
 ---
 
@@ -477,8 +488,10 @@ TTL user:1
   * 높은 가용성 확보
 
 * 단순한 **성능 부스터**의 개념은 아님
-
 * 여러 서버가 역할과 데이터를 나누어 처리하는 구조
+* full-mesh 구조로 통신
+* Hash-Slot을 사용한 키 관리(저장)
+  > Key값을 Hash해서 어떤 slot인지 확인하고 그 slot을 담당하는 서버에 저장
 
 * 장점
 
@@ -562,6 +575,7 @@ EXPIRE session:user:1 3600
 ## RDB Snapshot
 
 * 특정 시점의 Redis 데이터를 파일로 저장
+* 사진처럼 찍어서 남겨서 Snapshot이라 불림
 * 일반적으로 `dump.rdb` 파일 사용
 * 주기적인 백업에 적합
 
@@ -570,6 +584,7 @@ EXPIRE session:user:1 3600
 ## AOF(Append Only File)
 
 * Redis에서 발생한 데이터 변경 명령을 파일에 기록
+  쓰기/수정/삭제가 발생할 시 작동
 
 예시:
 
